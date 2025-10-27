@@ -17,18 +17,35 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 🔧 This step ensures Pages is enabled if it doesn't exist
+      - name: Enable GitHub Pages (if needed)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Ensuring GitHub Pages is enabled for this repo..."
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/pages \
+            -f "build_type=workflow" || echo "Pages already enabled."
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload README
+      - name: Convert README.md to index.html
+        run: |
+          mkdir public
+          pandoc README.md -f markdown -t html -s -o public/index.html
+
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .  # includes README.md
+          path: ./public
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
+
