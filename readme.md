@@ -2300,7 +2300,7 @@ Full-featured framework by Google:
 ### 11.1 Common Vulnerabilities
 
 **What It Is**
-- **XSS (Cross-Site Scripting)**: Injecting malicious scripts (`<script>alert('XSS')</script>`)
+- **XSS (Cross-Site Scripting)**: Injecting malicious scripts (`script -alert('XSS') script`)
 - **CSRF (Cross-Site Request Forgery)**: Trick users into unwanted actions
 - **Clickjacking**: Invisible iframe tricks users into clicking
 - **Open redirects**: Redirect to malicious sites
@@ -2350,7 +2350,7 @@ Full-featured framework by Google:
 **Where It's Used**
 - **All production apps**: CSP, SameSite cookies, HttpOnly flags standard
 - **React**: Avoid `dangerouslySetInnerHTML`, use Trusted Types
-- **CDN scripts**: Add SRI to <script> tags
+- **CDN scripts**: Add SRI to script tags
 
 **Alternatives & Trade-offs**
 - **CSP strictness**:
