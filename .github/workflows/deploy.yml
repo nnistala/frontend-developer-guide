@@ -33,7 +33,9 @@ jobs:
       - name: Convert README.md to index.html
         run: |
           mkdir public
-          pandoc readme.md -c style.css -s -o public/index.html
+          cp style.css public/
+          pandoc README.md -c style.css -s -o public/index.html
+
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
