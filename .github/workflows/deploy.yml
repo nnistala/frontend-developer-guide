@@ -1,9 +1,8 @@
-name: Deploy README to GitHub Pages
+name: Deploy static site to GitHub Pages
 
 on:
   push:
-    branches:
-      - main  # or master
+    branches: [ main ]  # or your default branch
 
 permissions:
   contents: read
@@ -24,23 +23,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Install Pandoc
-        run: sudo apt-get update && sudo apt-get install -y pandoc
-
-      - name: Convert README.md to index.html
+      # 🧱 Optional: if your HTML is in a subfolder like "public" or "dist"
+      # If index.html is at root, remove this step.
+      - name: Move site files
         run: |
           mkdir public
-          cp style.css public/
-          pandoc README.md -c style.css -s -o public/index.html
+          cp index.html public/
+          # Uncomment next line if you have CSS or images
+          # cp -r style.css assets/ public/
 
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: public   # this folder must contain index.html
 
       - name: Deploy to GitHub Pages
         id: deployment
