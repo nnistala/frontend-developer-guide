@@ -1,9 +1,9 @@
-# .github/workflows/deploy.yml
 name: Deploy README to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main  # or master
 
 permissions:
   contents: read
@@ -16,22 +16,13 @@ concurrency:
 
 jobs:
   deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      # 🔧 This step ensures Pages is enabled if it doesn't exist
-      - name: Enable GitHub Pages (if needed)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Ensuring GitHub Pages is enabled for this repo..."
-          gh api \
-            --method POST \
-            -H "Accept: application/vnd.github+json" \
-            /repos/${{ github.repository }}/pages \
-            -f "build_type=workflow" || echo "Pages already enabled."
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -39,13 +30,13 @@ jobs:
       - name: Convert README.md to index.html
         run: |
           mkdir public
-          pandoc README.md -f markdown -t html -s -o public/index.html
+          pandoc README.md -o public/index.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./public
+          path: public
 
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
-
